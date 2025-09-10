@@ -1,0 +1,34 @@
+version: 1.2.8
+
+cache: true
+
+interface:
+  privacyPolicy:
+    externalUrl: 'https://librechat.ai/privacy-policy'
+    openNewTab: true
+  termsOfService:
+    externalUrl: 'https://librechat.ai/tos'
+    openNewTab: true
+
+registration:
+  socialLogins:
+    - "discord"
+    - "facebook"
+    - "github"
+    - "google"
+    - "openid"
+
+endpoints:
+  custom:
+    # 302AI
+    # https://302.ai/
+    # Script to fetch models: https://github.com/LibreChat-AI/librechat-config-yaml/blob/main/scripts/ai302.py
+    - name: "302AI"
+      apiKey: "user_provided"
+      baseURL: "https://api.302.ai/v1"
+      toolkits: null
+      models:
+        default:
+          - 01-ai/Yi-1.5-34B-Chat-16K
+          - 01-ai/Yi-1.5-6B-Chat
+          - 01-ai/Yi-1.5-9B-Chat-16K
