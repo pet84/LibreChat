@@ -7,6 +7,24 @@ import CodeBlock from './CodeBlock';
 
 const localizedErrorPrefix = 'com_error';
 
+// Jednoduchý "humanizer" pro syrové anglické hlášky z providerů
+function humanizeProviderError(raw: string, _t: LocalizeFunction) {
+  const s = raw || '';
+  if (/tool calling is not supported/i.test(s)) {
+    return 'Vybraný model nepodporuje nástroje (tool calling). Zvol model, který tools podporuje, nebo vypni nástroje.';
+  }
+  if (/model is only supported in v1\/responses/i.test(s)) {
+    return 'Tento model je podporovaný pouze přes endpoint v1/responses. Změň endpoint, nebo vyber jiný model.';
+  }
+  if (/invalid api key/i.test(s)) {
+    return 'Neplatný API klíč. Zkontroluj nastavení klíče u zvoleného poskytovatele.';
+  }
+  if (/insufficient quota|rate limit/i.test(s)) {
+    return 'Byl vyčerpán limit/kvóta. Použij vlastní API klíč nebo počkej na reset limitu.';
+  }
+  return s; // fallback – ponech syrový text
+}
+
 type TConcurrent = {
   limit: number;
 };
@@ -36,7 +54,7 @@ type TGenericError = {
   info: string;
 };
 
-const errorMessages = {
+const errorMessages: Record<string, any> = {
   [ErrorTypes.MODERATION]: 'com_error_moderation',
   [ErrorTypes.NO_USER_KEY]: 'com_error_no_user_key',
   [ErrorTypes.INVALID_USER_KEY]: 'com_error_invalid_user_key',
@@ -93,9 +111,8 @@ const errorMessages = {
   message_limit: (json: TMessageLimit) => {
     const { max, windowInMinutes } = json;
     const plural = max > 1 ? 's' : '';
-    return `You hit the message limit. You have a cap of ${max} message${plural} per ${
-      windowInMinutes > 1 ? `${windowInMinutes} minutes` : 'minute'
-    }.`;
+    return `You hit the message limit. You have a cap of ${max} message${plural} per ${windowInMinutes > 1 ? `${windowInMinutes} minutes` : 'minute'
+      }.`;
   },
   token_balance: (json: TTokenBalance) => {
     const { balance, tokenCost, promptTokens, generations } = json;
@@ -124,25 +141,30 @@ const errorMessages = {
 const Error = ({ text }: { text: string }) => {
   const localize = useLocalize();
   const jsonString = extractJson(text);
-  const errorMessage = text.length > 512 && !jsonString ? text.slice(0, 512) + '...' : text;
-  const defaultResponse = `Something went wrong. Here's the specific error message we encountered: ${errorMessage}`;
+  const errorMessageRaw = text.length > 512 && !jsonString ? text.slice(0, 512) + '...' : text;
+
+  // Přeložený prefix + humanizace provider chyb (když není JSON)
+  const defaultResponse = `Nastala chyba. Konkrétní zpráva z API: ${humanizeProviderError(
+    errorMessageRaw,
+    localize,
+  )}`;
 
   if (!isJson(jsonString)) {
-    return defaultResponse;
+    return defaultResponse as unknown as JSX.Element | string;
   }
 
   const json = JSON.parse(jsonString);
-  const errorKey = json.code || json.type;
-  const keyExists = errorKey && errorMessages[errorKey];
+  const errorKey: string | undefined = json.code || json.type;
+  const keyExists = !!(errorKey && errorMessages[errorKey]);
 
-  if (keyExists && typeof errorMessages[errorKey] === 'function') {
-    return errorMessages[errorKey](json, localize);
-  } else if (keyExists && keyExists.startsWith(localizedErrorPrefix)) {
-    return localize(errorMessages[errorKey]);
+  if (keyExists && typeof errorMessages[errorKey!] === 'function') {
+    return errorMessages[errorKey!](json, localize);
+  } else if (keyExists && (errorKey as string).startsWith(localizedErrorPrefix)) {
+    return localize(errorMessages[errorKey!]);
   } else if (keyExists) {
-    return errorMessages[errorKey];
+    return errorMessages[errorKey!];
   } else {
-    return defaultResponse;
+    return defaultResponse as unknown as JSX.Element | string;
   }
 };
 
