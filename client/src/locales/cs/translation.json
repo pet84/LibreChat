@@ -52,7 +52,7 @@
   "com_agents_error_title": "Něco se pokazilo",
   "com_agents_file_context": "Kontext souboru (OCR)",
   "com_agents_file_context_disabled": "Před nahráním souborů pro kontext musíte vytvořit agenta.",
-  "com_agents_file_context_info": "Files uploaded as \"Context\" are processed using OCR to extract text, which is then added to the Agent's instructions. Ideal for documents, images with text, or PDFs where you need the full text content of a file",
+  "com_agents_file_context_info": "Soubory nahrané jako \"Context\" jsou zpracovány pomocí OCR pro extrakci textu, který je poté přidán k instrukcím agenta. Vhodné pro dokumenty, obrázky s textem nebo PDF, kde potřebujete získat úplný textový obsah souboru",
   "com_agents_grid_announcement": "Zobrazeno {{count}} agentů v kategorii {{category}}",
   "com_agents_link_copied": "Odkaz zkopírován",
   "com_agents_link_copy_failed": "Nepodařilo se zkopírovat odkaz",
