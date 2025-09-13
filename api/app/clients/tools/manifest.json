@@ -192,5 +192,12 @@
         "description": "Zadejte svůj Flux API klíč ve svém uživatelském profilu."
       }
     ]
+  },
+  {
+    "name": "Gemini Image Tools",
+    "pluginKey": "gemini_image_gen",
+    "description": "Generate high-quality images using Google's Gemini 2.5 Flash Image Model",
+    "icon": "/assets/gemini_image_gen.png",
+    "authConfig": []
   }
 ]
