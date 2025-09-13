@@ -2,20 +2,20 @@
   {
     "name": "Traversaal",
     "pluginKey": "traversaal_search",
-    "description": "Traversaal je robustní vyhledávací API přizpůsobené pro LLM agenty. Získejte API klíč zde: https://api.traversaal.ai",
+    "description": "Traversaal je robustní vyhledávací API přizpůsobené pro LLM agenty.",
     "icon": "https://traversaal.ai/favicon.ico",
     "authConfig": [
       {
         "authField": "TRAVERSAAL_API_KEY",
         "label": "Traversaal API klíč",
-        "description": "Získejte svůj API klíč zde: <a href=\"https://api.traversaal.ai\" target=\"_blank\">https://api.traversaal.ai</a>"
+        "description": "Získejte svůj API klíč zde: <a href=\"https://api.traversaal.ai\" target=\"_blank\">https://api.traversaal.ai</a>."
       }
     ]
   },
   {
     "name": "Google",
     "pluginKey": "google",
-    "description": "Použijte Google Search k nalezení informací o počasí, novinkách, sportu a dalším.",
+    "description": "Použijte Google Search k nalezení informací o počasí, novinkách, sportu a dalších tématech.",
     "icon": "https://i.imgur.com/SMmVkNB.png",
     "authConfig": [
       {
@@ -34,7 +34,7 @@
     "name": "YouTube",
     "pluginKey": "youtube",
     "toolkit": true,
-    "description": "Získejte informace o videích na YouTube, komentáře, přepisy a vyhledávání videí.",
+    "description": "Získejte informace o videích na YouTube, komentářích, přepisech a vyhledávání videí.",
     "icon": "https://www.youtube.com/s/desktop/7449ebf7/img/favicon_144x144.png",
     "authConfig": [
       {
@@ -48,13 +48,13 @@
     "name": "OpenAI Image Tools",
     "pluginKey": "image_gen_oai",
     "toolkit": true,
-    "description": "Generování a úpravy obrázků pomocí nejnovějších modelů OpenAI",
+    "description": "Generování a úpravy obrázků pomocí nejnovějších modelů OpenAI.",
     "icon": "assets/image_gen_oai.png",
     "authConfig": [
       {
         "authField": "IMAGE_GEN_OAI_API_KEY",
         "label": "OpenAI Image Tools API klíč",
-        "description": "Váš OpenAI API klíč pro generování a úpravy obrázků"
+        "description": "Váš OpenAI API klíč pro generování a úpravy obrázků."
       }
     ]
   },
@@ -74,33 +74,33 @@
   {
     "name": "Browser",
     "pluginKey": "web-browser",
-    "description": "Stáhněte a shrňte data z webových stránek",
+    "description": "Stáhněte a shrňte data z webových stránek.",
     "icon": "assets/web-browser.svg",
     "authConfig": [
       {
         "authField": "OPENAI_API_KEY",
         "label": "OpenAI API klíč",
-        "description": "Browser používá OpenAI embeddings"
+        "description": "Browser používá OpenAI embeddings."
       }
     ]
   },
   {
-    "name": "Serpapi",
+    "name": "SerpAPI",
     "pluginKey": "serpapi",
-    "description": "SerpApi je API v reálném čase pro přístup k výsledkům vyhledávačů.",
+    "description": "SerpAPI je API v reálném čase pro přístup k výsledkům vyhledávačů.",
     "icon": "https://i.imgur.com/5yQHUz4.png",
     "authConfig": [
       {
         "authField": "SERPAPI_API_KEY",
-        "label": "Serpapi soukromý API klíč",
-        "description": "Soukromý klíč pro Serpapi. Zaregistrujte se na <a href='https://serpapi.com/'>Serpapi</a> a získejte soukromý klíč."
+        "label": "Soukromý API klíč SerpAPI",
+        "description": "Získejte svůj soukromý klíč po registraci na <a href='https://serpapi.com/'>SerpAPI</a>."
       }
     ]
   },
   {
     "name": "DALL-E-3",
     "pluginKey": "dalle",
-    "description": "[DALL-E-3] Vytvářejte realistické obrázky a umění z přirozeného jazyka",
+    "description": "Vytvářejte realistické obrázky a umění z přirozeného jazyka.",
     "icon": "https://i.imgur.com/u2TzXzH.png",
     "authConfig": [
       {
@@ -119,7 +119,7 @@
       {
         "authField": "TAVILY_API_KEY",
         "label": "Tavily API klíč",
-        "description": "Získejte svůj API klíč zde: https://app.tavily.com/"
+        "description": "Získejte svůj API klíč zde: <a href=\"https://app.tavily.com/\" target=\"_blank\">https://app.tavily.com/</a>."
       }
     ]
   },
@@ -139,43 +139,43 @@
       {
         "authField": "SD_WEBUI_URL",
         "label": "Adresa vašeho Stable Diffusion WebUI API",
-        "description": "Musíte zadat URL vašeho Stable Diffusion WebUI API. Jak ji získat, viz <a href='url'>naši dokumentaci</a>."
+        "description": "Zadejte URL vašeho Stable Diffusion WebUI API. Více informací najdete v dokumentaci."
       }
     ]
   },
   {
     "name": "Azure AI Search",
     "pluginKey": "azure-ai-search",
-    "description": "Použijte Azure AI Search k vyhledávání informací",
+    "description": "Použijte Azure AI Search k vyhledávání informací.",
     "icon": "https://i.imgur.com/E7crPze.png",
     "authConfig": [
       {
         "authField": "AZURE_AI_SEARCH_SERVICE_ENDPOINT",
         "label": "Azure AI Search Endpoint",
-        "description": "Musíte zadat svůj Endpoint pro Azure AI Search."
+        "description": "Zadejte svůj Endpoint pro Azure AI Search."
       },
       {
         "authField": "AZURE_AI_SEARCH_INDEX_NAME",
         "label": "Azure AI Search Index Name",
-        "description": "Musíte zadat svůj Index Name pro Azure AI Search."
+        "description": "Zadejte svůj Index Name pro Azure AI Search."
       },
       {
         "authField": "AZURE_AI_SEARCH_API_KEY",
         "label": "Azure AI Search API klíč",
-        "description": "Musíte zadat svůj API klíč pro Azure AI Search."
+        "description": "Zadejte svůj API klíč pro Azure AI Search."
       }
     ]
   },
   {
     "name": "OpenWeather",
     "pluginKey": "open_weather",
-    "description": "Získejte předpovědi počasí a historická data z OpenWeather API",
+    "description": "Získejte předpovědi počasí a historická data z OpenWeather API.",
     "icon": "assets/openweather.png",
     "authConfig": [
       {
         "authField": "OPENWEATHER_API_KEY",
         "label": "OpenWeather API klíč",
-        "description": "Zaregistrujte se na <a href=\"https://home.openweathermap.org/users/sign_up\" target=\"_blank\">OpenWeather</a>, pak získejte klíč na <a href=\"https://home.openweathermap.org/api_keys\" target=\"_blank\">API keys</a>."
+        "description": "Zaregistrujte se na <a href=\"https://home.openweathermap.org/users/sign_up\" target=\"_blank\">OpenWeather</a> a získejte svůj API klíč v sekci <a href=\"https://home.openweathermap.org/api_keys\" target=\"_blank\">API keys</a>."
       }
     ]
   },
@@ -189,7 +189,7 @@
       {
         "authField": "FLUX_API_KEY",
         "label": "Flux API klíč",
-        "description": "Zadejte svůj Flux API klíč z uživatelského profilu."
+        "description": "Zadejte svůj Flux API klíč ve svém uživatelském profilu."
       }
     ]
   }
