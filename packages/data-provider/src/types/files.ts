@@ -10,7 +10,6 @@ export enum FileSources {
   vectordb = 'vectordb',
   execute_code = 'execute_code',
   mistral_ocr = 'mistral_ocr',
-  openai_vision_ocr = 'openai_vision_ocr',
   azure_mistral_ocr = 'azure_mistral_ocr',
   vertexai_mistral_ocr = 'vertexai_mistral_ocr',
   text = 'text',

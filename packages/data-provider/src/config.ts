@@ -669,7 +669,6 @@ export type TStartupConfig = {
 
 export enum OCRStrategy {
   MISTRAL_OCR = 'mistral_ocr',
-  OPENAI_VISION = 'openai_vision_ocr',
   CUSTOM_OCR = 'custom_ocr',
   AZURE_MISTRAL_OCR = 'azure_mistral_ocr',
   VERTEXAI_MISTRAL_OCR = 'vertexai_mistral_ocr',
@@ -755,7 +754,6 @@ export type TWebSearchConfig = z.infer<typeof webSearchSchema>;
 
 export const ocrSchema = z.object({
   mistralModel: z.string().optional(),
-  visionModel: z.string().optional(),
   apiKey: z.string().optional().default('${OCR_API_KEY}'),
   baseURL: z.string().optional().default('${OCR_BASEURL}'),
   strategy: z.nativeEnum(OCRStrategy).default(OCRStrategy.MISTRAL_OCR),
@@ -1146,13 +1144,7 @@ export function validateVisionModel({
   return visionModels.concat(additionalModels).some((visionModel) => model.includes(visionModel));
 }
 
-export const imageGenTools = new Set([
-  'dalle',
-  'dall-e',
-  'stable-diffusion',
-  'flux',
-  'gemini_image_gen',
-]);
+export const imageGenTools = new Set(['dalle', 'dall-e', 'stable-diffusion', 'flux']);
 
 /**
  * Enum for collections using infinite queries

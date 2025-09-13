@@ -48,9 +48,7 @@ const {
   prepareAzureImageURL,
   processAzureAvatar,
 } = require('./Azure');
-
-const { uploadOpenAIVisionOCR } = require('./OpenAIVisionOCR/crud');
-const { uploadOpenAIFile, deleteOpenAIFile, getOpenAIFileStream } = require('./OpenAI/index');
+const { uploadOpenAIFile, deleteOpenAIFile, getOpenAIFileStream } = require('./OpenAI');
 const { getCodeOutputDownloadStream, uploadCodeEnvFile } = require('./Code');
 const { uploadVectors, deleteVectors } = require('./VectorDB');
 
@@ -228,26 +226,6 @@ const azureMistralOCRStrategy = () => ({
   handleFileUpload: uploadAzureMistralOCR,
 });
 
-const openAIVisionOCRStrategy = () => ({
-  /** @type {typeof saveFileFromURL | null} */
-  saveURL: null,
-  /** @type {typeof getLocalFileURL | null} */
-  getFileURL: null,
-  /** @type {typeof saveLocalBuffer | null} */
-  saveBuffer: null,
-  /** @type {typeof processLocalAvatar | null} */
-  processAvatar: null,
-  /** @type {typeof uploadLocalImage | null} */
-  handleImageUpload: null,
-  /** @type {typeof prepareImagesLocal | null} */
-  prepareImagePayload: null,
-  /** @type {typeof deleteLocalFile | null} */
-  deleteFile: null,
-  /** @type {typeof getLocalFileStream | null} */
-  getDownloadStream: null,
-  handleFileUpload: uploadOpenAIVisionOCR,
-});
-
 const vertexMistralOCRStrategy = () => ({
   /** @type {typeof saveFileFromURL | null} */
   saveURL: null,
@@ -292,8 +270,6 @@ const getStrategyFunctions = (fileSource) => {
     return azureMistralOCRStrategy();
   } else if (fileSource === FileSources.vertexai_mistral_ocr) {
     return vertexMistralOCRStrategy();
-  } else if (fileSource === FileSources.openai_vision_ocr) {
-    return openAIVisionOCRStrategy();
   } else if (fileSource === FileSources.text) {
     return localStrategy(); // Text files use local strategy
   } else {
