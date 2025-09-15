@@ -37,7 +37,7 @@ function cleanupAbortController(abortKey) {
 
     // First, execute a dummy listener removal to handle potential composed signals
     for (const eventType of eventTypes) {
-      const dummyHandler = () => {};
+      const dummyHandler = () => { };
       composedSignal.addEventListener(eventType, dummyHandler);
       composedSignal.removeEventListener(eventType, dummyHandler);
 
@@ -114,7 +114,7 @@ async function abortMessage(req, res) {
   const finalEvent = await abortController.abortCompletion?.();
   logger.debug(
     `[abortMessage] ID: ${req.user.id} | ${req.user.email} | Aborted request: ` +
-      JSON.stringify({ abortKey }),
+    JSON.stringify({ abortKey }),
   );
   cleanupAbortController(abortKey);
 
@@ -240,7 +240,7 @@ const createAbortController = (req, res, getAbortData, getReqData) => {
     // Get data from WeakMap
     const ctrlData = abortDataMap.get(this);
     if (!ctrlData || !ctrlData.getAbortDataFn) {
-      return { final: true, conversation: {}, title: 'New Chat' };
+      return { final: true, conversation: {}, title: 'Nový chat' };
     }
 
     // Get abort data using stored function
@@ -287,7 +287,7 @@ const createAbortController = (req, res, getAbortData, getReqData) => {
     }
 
     return {
-      title: conversation && !conversation.title ? null : conversation?.title || 'New Chat',
+      title: conversation && !conversation.title ? null : conversation?.title || 'Nový chat',
       final: true,
       conversation,
       requestMessage: userMessage,

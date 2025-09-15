@@ -189,7 +189,7 @@ const EditController = async (req, res, next, initializeClient) => {
     const { conversation: convoData = {} } = await databasePromise;
     const conversation = { ...convoData };
     conversation.title =
-      conversation && !conversation.title ? null : conversation?.title || 'New Chat';
+      conversation && !conversation.title ? null : conversation?.title || 'Nový chat';
 
     if (client?.options?.attachments && endpointOption?.modelOptions?.model) {
       conversation.model = endpointOption.modelOptions.model;

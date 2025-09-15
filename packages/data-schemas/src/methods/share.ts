@@ -194,7 +194,7 @@ export function createShareMethods(mongoose: typeof import('mongoose')) {
       return {
         links: links.map((link) => ({
           shareId: link.shareId || '',
-          title: link?.title || 'Untitled',
+          title: link?.title || 'Bez názvu',
           isPublic: link.isPublic,
           createdAt: link.createdAt || new Date(),
           conversationId: link.conversationId,
@@ -280,7 +280,7 @@ export function createShareMethods(mongoose: typeof import('mongoose')) {
         throw new ShareServiceError('No messages to share', 'NO_MESSAGES');
       }
 
-      const title = conversation.title || 'Untitled';
+      const title = conversation.title || 'Bez názvu';
 
       const shareId = nanoid();
       await SharedLink.create({

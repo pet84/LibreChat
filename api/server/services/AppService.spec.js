@@ -704,7 +704,7 @@ describe('AppService', () => {
             titleConvo: true,
             titleModel: 'gpt-3.5-turbo',
             titleEndpoint: EModelEndpoint.anthropic,
-            titlePrompt: 'Generate a concise title',
+            titlePrompt: 'Vytvoř krátký, výstižný český název této konverzace (max. 6 slov). Nepoužívej uvozovky ani tečky.',
           },
           [EModelEndpoint.agents]: {
             titleEndpoint: 'custom-provider',
@@ -724,7 +724,7 @@ describe('AppService', () => {
             titleConvo: true,
             titleModel: 'gpt-3.5-turbo',
             titleEndpoint: EModelEndpoint.anthropic,
-            titlePrompt: 'Generate a concise title',
+            titlePrompt: 'Vytvoř krátký, výstižný český název této konverzace (max. 6 slov). Nepoužívej uvozovky ani tečky.',
           }),
           // Check Agents endpoint has titleEndpoint
           [EModelEndpoint.agents]: expect.objectContaining({

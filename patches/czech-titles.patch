@@ -1,0 +1,35 @@
+--- a/api/server/controllers/EditController.js
++++ b/api/server/controllers/EditController.js
+@@
+- conversation && !conversation.title ? null : conversation?.title || 'New Chat'
++ conversation && !conversation.title ? null : conversation?.title || 'Nový chat'
+
+--- a/api/server/controllers/agents/request.js
++++ b/api/server/controllers/agents/request.js
+@@
+- conversation && !conversation.title ? null : conversation?.title || 'New Chat'
++ conversation && !conversation.title ? null : conversation?.title || 'Nový chat'
+
+--- a/api/server/middleware/abortMiddleware.js
++++ b/api/server/middleware/abortMiddleware.js
+@@
+-      return { final: true, conversation: {}, title: 'Nový chat' };
++      return { final: true, conversation: {}, title: 'Nový chat' };
+@@
+-      title: conversation && !conversation.title ? null : conversation?.title || 'New Chat',
++      title: conversation && !conversation.title ? null : conversation?.title || 'Nový chat',
+
+--- a/api/server/services/shareService.js
++++ b/api/server/services/shareService.js
+@@
+-      const title = conversation.title || 'Bez názvu';
++      const title = conversation.title || 'Bez názvu';
+@@
+-          title: link?.title || 'Bez názvu',
++          title: link?.title || 'Bez názvu',
+
+--- a/api/server/services/AppService.js
++++ b/api/server/services/AppService.js
+@@
+- titlePrompt: 'Vytvoř krátký, výstižný český název této konverzace (max. 6 slov). Nepoužívej uvozovky ani tečky.',
++ titlePrompt: 'Vytvoř krátký, výstižný český název této konverzace (max. 6 slov). Nepoužívej uvozovky ani tečky.',
