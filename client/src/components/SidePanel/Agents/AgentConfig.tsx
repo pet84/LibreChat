@@ -293,22 +293,24 @@ export default function AgentConfig({ createMutation }: Pick<AgentPanelProps, 'c
           artifactsEnabled ||
           ocrEnabled ||
           webSearchEnabled) && (
-          <div className="mb-4 flex w-full flex-col items-start gap-3">
-            <label className="text-token-text-primary block font-medium">
-              {localize('com_assistants_capabilities')}
-            </label>
-            {/* Code Execution */}
+            <div className="mb-4 flex w-full flex-col items-start gap-3">
+              <label className="text-token-text-primary block font-medium">
+                {localize('com_assistants_capabilities')}
+              </label>
+              {/*
+            Code Execution 
             {codeEnabled && <CodeForm agent_id={agent_id} files={code_files} />}
-            {/* Web Search */}
-            {webSearchEnabled && <SearchForm />}
-            {/* File Context (OCR) */}
-            {ocrEnabled && <FileContext agent_id={agent_id} files={context_files} />}
-            {/* Artifacts */}
-            {artifactsEnabled && <Artifacts />}
-            {/* File Search */}
-            {fileSearchEnabled && <FileSearch agent_id={agent_id} files={knowledge_files} />}
-          </div>
-        )}
+            */}
+              {/* Web Search */}
+              {webSearchEnabled && <SearchForm />}
+              {/* File Context (OCR) */}
+              {ocrEnabled && <FileContext agent_id={agent_id} files={context_files} />}
+              {/* Artifacts */}
+              {artifactsEnabled && <Artifacts />}
+              {/* File Search */}
+              {fileSearchEnabled && <FileSearch agent_id={agent_id} files={knowledge_files} />}
+            </div>
+          )}
         {/* MCP Section */}
         {startupConfig?.mcpServers != null && (
           <MCPTools
