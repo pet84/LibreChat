@@ -6,7 +6,7 @@ const {
 
 const langPrompt = new ChatPromptTemplate({
   promptMessages: [
-    SystemMessagePromptTemplate.fromTemplate('Detect the language used in the following text.'),
+    SystemMessagePromptTemplate.fromTemplate('Rozpoznejte jazyk použitý v následujícím textu.'),
     HumanMessagePromptTemplate.fromTemplate('{inputText}'),
   ],
   inputVariables: ['inputText'],
@@ -16,10 +16,10 @@ const createTitlePrompt = ({ convo }) => {
   const titlePrompt = new ChatPromptTemplate({
     promptMessages: [
       SystemMessagePromptTemplate.fromTemplate(
-        `Write a concise title for this conversation in the given language. Title in 5 Words or Less. No Punctuation or Quotation. Must be in Title Case, written in the given Language.
+        `Napište stručný název pro tuto konverzaci v daném jazyce. Název o 5 slovech nebo méně. Bez interpunkce nebo uvozovek. Musí být v titulkovém formátu, napsaný v daném jazyce.
 ${convo}`,
       ),
-      HumanMessagePromptTemplate.fromTemplate('Language: {language}'),
+      HumanMessagePromptTemplate.fromTemplate('Jazyk: {language}'),
     ],
     inputVariables: ['language'],
   });
@@ -28,10 +28,10 @@ ${convo}`,
 };
 
 const titleInstruction =
-  'a concise, 5-word-or-less title for the conversation, using its same language, with no punctuation. Apply title case conventions appropriate for the language. Never directly mention the language name or the word "title"';
-const titleFunctionPrompt = `In this environment you have access to a set of tools you can use to generate the conversation title.
+  'stručný název konverzace o 5 slovech nebo méně, ve stejném jazyce, bez interpunkce. Použijte pravidla pro titulkový formát vhodná pro daný jazyk. Nikdy přímo nezmiňujte název jazyka ani slovo "název".';
+const titleFunctionPrompt = `V tomto prostředí máte přístup k sadě nástrojů, které můžete použít k vytvoření názvu konverzace.
   
-You may call them like this:
+Můžete je volat takto:
 <function_calls>
 <invoke>
 <tool_name>$TOOL_NAME</tool_name>
@@ -42,12 +42,12 @@ You may call them like this:
 </invoke>
 </function_calls>
 
-Here are the tools available:
+Zde jsou dostupné nástroje:
 <tools>
 <tool_description>
 <tool_name>submit_title</tool_name>
 <description>
-Submit a brief title in the conversation's language, following the parameter description closely.
+Odešlete stručný název v jazyce konverzace, přesně podle popisu parametru.
 </description>
 <parameters>
 <parameter>
@@ -61,9 +61,9 @@ Submit a brief title in the conversation's language, following the parameter des
 
 const genTranslationPrompt = (
   translationPrompt,
-) => `In this environment you have access to a set of tools you can use to translate text.
+) => `V tomto prostředí máte přístup k sadě nástrojů, které můžete použít k překladu textu.
   
-You may call them like this:
+Můžete je volat takto:
 <function_calls>
 <invoke>
 <tool_name>$TOOL_NAME</tool_name>
@@ -74,19 +74,19 @@ You may call them like this:
 </invoke>
 </function_calls>
 
-Here are the tools available:
+Zde jsou dostupné nástroje:
 <tools>
 <tool_description>
 <tool_name>submit_translation</tool_name>
 <description>
-Submit a translation in the target language, following the parameter description and its language closely.
+Odešlete překlad v cílovém jazyce, přesně podle popisu parametru a jeho jazyka.
 </description>
 <parameters>
 <parameter>
 <name>translation</name>
 <type>string</type>
 <description>${translationPrompt}
-ONLY include the generated translation without quotations, nor its related key</description>
+POUZE zahrňte vygenerovaný překlad bez uvozovek ani jeho souvisejícího klíče</description>
 </parameter>
 </parameters>
 </tool_description>
