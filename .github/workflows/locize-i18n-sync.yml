@@ -1,10 +1,5 @@
 name: Sync Locize Translations & Create Translation PR
 
-on:
-
-  repository_dispatch:
-    types: [locize/versionPublished]
-
 jobs:
   sync-translations:
     name: Sync Translation Keys with Locize
