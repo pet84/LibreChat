@@ -225,6 +225,15 @@ if (cluster.isMaster) {
 
     /** Load index.html for SPA serving */
     const indexPath = path.join(appConfig.paths.dist, 'index.html');
+    
+    // Check if index.html exists before trying to read it
+    if (!fs.existsSync(indexPath)) {
+      logger.error(`[Worker ${process.pid}] index.html not found at ${indexPath}`);
+      logger.error(`[Worker ${process.pid}] dist directory exists: ${fs.existsSync(appConfig.paths.dist)}`);
+      logger.error(`[Worker ${process.pid}] dist directory contents: ${fs.existsSync(appConfig.paths.dist) ? fs.readdirSync(appConfig.paths.dist).join(', ') : 'N/A'}`);
+      throw new Error(`Frontend build not found. Please ensure 'npm run frontend' completed successfully. Expected: ${indexPath}`);
+    }
+    
     let indexHTML = fs.readFileSync(indexPath, 'utf8');
 
     /** Support serving in subdirectory if DOMAIN_CLIENT is set */

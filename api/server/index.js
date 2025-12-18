@@ -61,6 +61,15 @@ const startServer = async () => {
   await updateInterfacePermissions(appConfig);
 
   const indexPath = path.join(appConfig.paths.dist, 'index.html');
+  
+  // Check if index.html exists before trying to read it
+  if (!fs.existsSync(indexPath)) {
+    logger.error(`[startServer] index.html not found at ${indexPath}`);
+    logger.error(`[startServer] dist directory exists: ${fs.existsSync(appConfig.paths.dist)}`);
+    logger.error(`[startServer] dist directory contents: ${fs.existsSync(appConfig.paths.dist) ? fs.readdirSync(appConfig.paths.dist).join(', ') : 'N/A'}`);
+    throw new Error(`Frontend build not found. Please ensure 'npm run frontend' completed successfully. Expected: ${indexPath}`);
+  }
+  
   let indexHTML = fs.readFileSync(indexPath, 'utf8');
 
   // In order to provide support to serving the application in a sub-directory
