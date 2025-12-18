@@ -30,8 +30,6 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./Dockerfile.multi
-          target: api-build
           push: true
           tags: |
             ghcr.io/pet84/librechat:latest
