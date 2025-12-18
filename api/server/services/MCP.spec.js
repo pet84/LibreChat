@@ -43,6 +43,11 @@ jest.mock('@librechat/agents', () => ({
   },
 }));
 
+const mockRegistryInstance = {
+  getOAuthServers: jest.fn(() => Promise.resolve(new Set())),
+  getAllServerConfigs: jest.fn(() => Promise.resolve({})),
+};
+
 jest.mock('@librechat/api', () => ({
   MCPOAuthHandler: {
     generateFlowId: jest.fn(),
@@ -50,6 +55,9 @@ jest.mock('@librechat/api', () => ({
   sendEvent: jest.fn(),
   normalizeServerName: jest.fn((name) => name),
   convertWithResolvedRefs: jest.fn((params) => params),
+  MCPServersRegistry: {
+    getInstance: () => mockRegistryInstance,
+  },
 }));
 
 jest.mock('librechat-data-provider', () => ({
@@ -79,6 +87,7 @@ jest.mock('~/config', () => ({
   getMCPManager: jest.fn(),
   getFlowStateManager: jest.fn(),
   getOAuthReconnectionManager: jest.fn(),
+  getMCPServersRegistry: jest.fn(() => mockRegistryInstance),
 }));
 
 jest.mock('~/cache', () => ({
@@ -113,46 +122,43 @@ describe('tests for the new helper functions used by the MCP connection status e
   describe('getMCPSetupData', () => {
     const mockUserId = 'user-123';
     const mockConfig = {
-      mcpServers: {
-        server1: { type: 'stdio' },
-        server2: { type: 'http' },
-      },
+      server1: { type: 'stdio' },
+      server2: { type: 'http' },
     };
-    let mockGetAppConfig;
 
     beforeEach(() => {
-      mockGetAppConfig = require('./Config').getAppConfig;
       mockGetMCPManager.mockReturnValue({
-        appConnections: { getAll: jest.fn(() => new Map()) },
+        appConnections: { getLoaded: jest.fn(() => new Map()) },
         getUserConnections: jest.fn(() => new Map()),
-        getOAuthServers: jest.fn(() => new Set()),
       });
+      mockRegistryInstance.getOAuthServers.mockResolvedValue(new Set());
+      mockRegistryInstance.getAllServerConfigs.mockResolvedValue(mockConfig);
     });
 
     it('should successfully return MCP setup data', async () => {
-      mockGetAppConfig.mockResolvedValue({ mcpConfig: mockConfig.mcpServers });
+      mockRegistryInstance.getAllServerConfigs.mockResolvedValue(mockConfig);
 
       const mockAppConnections = new Map([['server1', { status: 'connected' }]]);
       const mockUserConnections = new Map([['server2', { status: 'disconnected' }]]);
       const mockOAuthServers = new Set(['server2']);
 
       const mockMCPManager = {
-        appConnections: { getAll: jest.fn(() => mockAppConnections) },
+        appConnections: { getLoaded: jest.fn(() => Promise.resolve(mockAppConnections)) },
         getUserConnections: jest.fn(() => mockUserConnections),
-        getOAuthServers: jest.fn(() => mockOAuthServers),
       };
       mockGetMCPManager.mockReturnValue(mockMCPManager);
+      mockRegistryInstance.getOAuthServers.mockResolvedValue(mockOAuthServers);
 
       const result = await getMCPSetupData(mockUserId);
 
-      expect(mockGetAppConfig).toHaveBeenCalled();
+      expect(mockRegistryInstance.getAllServerConfigs).toHaveBeenCalledWith(mockUserId);
       expect(mockGetMCPManager).toHaveBeenCalledWith(mockUserId);
-      expect(mockMCPManager.appConnections.getAll).toHaveBeenCalled();
+      expect(mockMCPManager.appConnections.getLoaded).toHaveBeenCalled();
       expect(mockMCPManager.getUserConnections).toHaveBeenCalledWith(mockUserId);
-      expect(mockMCPManager.getOAuthServers).toHaveBeenCalled();
+      expect(mockRegistryInstance.getOAuthServers).toHaveBeenCalledWith(mockUserId);
 
       expect(result).toEqual({
-        mcpConfig: mockConfig.mcpServers,
+        mcpConfig: mockConfig,
         appConnections: mockAppConnections,
         userConnections: mockUserConnections,
         oauthServers: mockOAuthServers,
@@ -160,24 +166,24 @@ describe('tests for the new helper functions used by the MCP connection status e
     });
 
     it('should throw error when MCP config not found', async () => {
-      mockGetAppConfig.mockResolvedValue({});
+      mockRegistryInstance.getAllServerConfigs.mockResolvedValue(null);
       await expect(getMCPSetupData(mockUserId)).rejects.toThrow('MCP config not found');
     });
 
     it('should handle null values from MCP manager gracefully', async () => {
-      mockGetAppConfig.mockResolvedValue({ mcpConfig: mockConfig.mcpServers });
+      mockRegistryInstance.getAllServerConfigs.mockResolvedValue(mockConfig);
 
       const mockMCPManager = {
-        appConnections: { getAll: jest.fn(() => null) },
+        appConnections: { getLoaded: jest.fn(() => Promise.resolve(null)) },
         getUserConnections: jest.fn(() => null),
-        getOAuthServers: jest.fn(() => null),
       };
       mockGetMCPManager.mockReturnValue(mockMCPManager);
+      mockRegistryInstance.getOAuthServers.mockResolvedValue(new Set());
 
       const result = await getMCPSetupData(mockUserId);
 
       expect(result).toEqual({
-        mcpConfig: mockConfig.mcpServers,
+        mcpConfig: mockConfig,
         appConnections: new Map(),
         userConnections: new Map(),
         oauthServers: new Set(),
@@ -324,15 +330,25 @@ describe('tests for the new helper functions used by the MCP connection status e
   describe('getServerConnectionStatus', () => {
     const mockUserId = 'user-123';
     const mockServerName = 'test-server';
+    const mockConfig = { updatedAt: Date.now() };
 
     it('should return app connection state when available', async () => {
-      const appConnections = new Map([[mockServerName, { connectionState: 'connected' }]]);
+      const appConnections = new Map([
+        [
+          mockServerName,
+          {
+            connectionState: 'connected',
+            isStale: jest.fn(() => false),
+          },
+        ],
+      ]);
       const userConnections = new Map();
       const oauthServers = new Set();
 
       const result = await getServerConnectionStatus(
         mockUserId,
         mockServerName,
+        mockConfig,
         appConnections,
         userConnections,
         oauthServers,
@@ -346,12 +362,21 @@ describe('tests for the new helper functions used by the MCP connection status e
 
     it('should fallback to user connection state when app connection not available', async () => {
       const appConnections = new Map();
-      const userConnections = new Map([[mockServerName, { connectionState: 'connecting' }]]);
+      const userConnections = new Map([
+        [
+          mockServerName,
+          {
+            connectionState: 'connecting',
+            isStale: jest.fn(() => false),
+          },
+        ],
+      ]);
       const oauthServers = new Set();
 
       const result = await getServerConnectionStatus(
         mockUserId,
         mockServerName,
+        mockConfig,
         appConnections,
         userConnections,
         oauthServers,
@@ -371,6 +396,7 @@ describe('tests for the new helper functions used by the MCP connection status e
       const result = await getServerConnectionStatus(
         mockUserId,
         mockServerName,
+        mockConfig,
         appConnections,
         userConnections,
         oauthServers,
@@ -383,13 +409,30 @@ describe('tests for the new helper functions used by the MCP connection status e
     });
 
     it('should prioritize app connection over user connection', async () => {
-      const appConnections = new Map([[mockServerName, { connectionState: 'connected' }]]);
-      const userConnections = new Map([[mockServerName, { connectionState: 'disconnected' }]]);
+      const appConnections = new Map([
+        [
+          mockServerName,
+          {
+            connectionState: 'connected',
+            isStale: jest.fn(() => false),
+          },
+        ],
+      ]);
+      const userConnections = new Map([
+        [
+          mockServerName,
+          {
+            connectionState: 'disconnected',
+            isStale: jest.fn(() => false),
+          },
+        ],
+      ]);
       const oauthServers = new Set();
 
       const result = await getServerConnectionStatus(
         mockUserId,
         mockServerName,
+        mockConfig,
         appConnections,
         userConnections,
         oauthServers,
@@ -415,6 +458,7 @@ describe('tests for the new helper functions used by the MCP connection status e
       const result = await getServerConnectionStatus(
         mockUserId,
         mockServerName,
+        mockConfig,
         appConnections,
         userConnections,
         oauthServers,
@@ -449,6 +493,7 @@ describe('tests for the new helper functions used by the MCP connection status e
       const result = await getServerConnectionStatus(
         mockUserId,
         mockServerName,
+        mockConfig,
         appConnections,
         userConnections,
         oauthServers,
@@ -486,6 +531,7 @@ describe('tests for the new helper functions used by the MCP connection status e
       const result = await getServerConnectionStatus(
         mockUserId,
         mockServerName,
+        mockConfig,
         appConnections,
         userConnections,
         oauthServers,
@@ -519,6 +565,7 @@ describe('tests for the new helper functions used by the MCP connection status e
       const result = await getServerConnectionStatus(
         mockUserId,
         mockServerName,
+        mockConfig,
         appConnections,
         userConnections,
         oauthServers,
@@ -544,6 +591,7 @@ describe('tests for the new helper functions used by the MCP connection status e
       const result = await getServerConnectionStatus(
         mockUserId,
         mockServerName,
+        mockConfig,
         appConnections,
         userConnections,
         oauthServers,
@@ -566,13 +614,22 @@ describe('tests for the new helper functions used by the MCP connection status e
       mockGetFlowStateManager.mockReturnValue(mockFlowManager);
       mockGetLogStores.mockReturnValue({});
 
-      const appConnections = new Map([[mockServerName, { connectionState: 'connected' }]]);
+      const appConnections = new Map([
+        [
+          mockServerName,
+          {
+            connectionState: 'connected',
+            isStale: jest.fn(() => false),
+          },
+        ],
+      ]);
       const userConnections = new Map();
       const oauthServers = new Set([mockServerName]);
 
       const result = await getServerConnectionStatus(
         mockUserId,
         mockServerName,
+        mockConfig,
         appConnections,
         userConnections,
         oauthServers,
@@ -601,6 +658,7 @@ describe('tests for the new helper functions used by the MCP connection status e
       const result = await getServerConnectionStatus(
         mockUserId,
         mockServerName,
+        mockConfig,
         appConnections,
         userConnections,
         oauthServers,
